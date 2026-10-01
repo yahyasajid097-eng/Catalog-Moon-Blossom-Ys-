@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Moon Blossom</title>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#141210;color:#e3cfa6;font-family:system-ui,"Segoe UI",Tahoma,sans-serif;text-align:center;padding:24px}
+a{display:inline-block;margin-top:14px;padding:12px 22px;border:1px solid #c6a46c;border-radius:12px;color:#e3cfa6;text-decoration:none;font-weight:700}
+</style>
+</head>
+<body>
+<div>
+  <h1>Moon Blossom</h1>
+  <p id="m">جارٍ فتح الكتالوج...</p>
+  <a id="go" href="./">فتح الكتالوج</a>
+</div>
+<script>
+(function(){
+  var seg=location.pathname.split("/")[1];
+  var base=seg?"/"+seg+"/":"/";
+  document.getElementById("go").href=base;
+  if(location.search.indexOf("r=1")>-1){
+    document.getElementById("m").textContent="اضغط الزر لفتح الكتالوج";
+    return;
+  }
+  location.replace(base+"?r=1");
+})();
+</script>
+</body>
+</html>
