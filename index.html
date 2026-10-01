@@ -55,6 +55,9 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .saved{margin-inline-start:auto;align-self:center;font-size:13px;color:var(--muted)}
 
+.extra{max-width:1200px;margin:14px auto 0;padding:0 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:500;font-size:14px}
+.extra input{width:72px;font:inherit;font-weight:700;text-align:center;direction:ltr;border:1px solid var(--gold);background:#fff;color:var(--ink);border-radius:10px;padding:7px 6px;min-height:40px}
+.extra input:focus{outline:2px solid var(--gold)}
 /* grid */
 .grid{max-width:1200px;margin:18px auto 0;padding:0 14px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}}
@@ -140,6 +143,11 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
   <span class="saved" id="saved" aria-live="polite"></span>
 </div>
 
+<div class="extra">
+  <label for="extra">تكلفة إضافية لكل منتج (توصيل المورد + التغليف):</label>
+  <span><input id="extra" type="text" inputmode="decimal" autocomplete="off" value="15"> DH</span>
+</div>
+
 <main>
   <section class="grid" id="grid" aria-label="المنتجات"></section>
 
@@ -153,8 +161,8 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
       <dl>
         <div class="line"><dt>إجمالي سعر الجملة:</dt><dd id="tw">0</dd></div>
         <div class="line"><dt>إجمالي سعر البيع:</dt><dd id="ts">0</dd></div>
-        <div class="line"><dt>إجمالي التوصيل:</dt><dd id="td">0</dd></div>
-        <div class="line big"><dt>إجمالي الربح:</dt><dd id="tp">0</dd></div>
+        <div class="line"><dt>تغليف وتوصيل المورد:</dt><dd id="td">0</dd></div>
+        <div class="line big"><dt>صافي الربح:</dt><dd id="tp">0</dd></div>
       </dl>
     </div>
     <div class="quote">كل منتج<br>يحكي قصة<br>من الأناقة ♡</div>
@@ -166,17 +174,17 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
 <script>
 (function(){
   var KEY="moonblossom-catalog-v1";
-  var DEFAULT_DELIVERY="40";
-  var state={items:[],notes:""};
+  var state={items:[],notes:"",extra:"15"};
   var grid=document.getElementById("grid");
   var savedEl=document.getElementById("saved");
   var saveTimer=null;
 
-  function blank(){return{img:"",w:"",s:"",d:DEFAULT_DELIVERY}}
+  function blank(){return{img:"",w:"",s:""}}
   function load(){
     try{
       var raw=localStorage.getItem(KEY);
-      if(raw){var p=JSON.parse(raw);if(p&&Array.isArray(p.items)&&p.items.length){state=p}}
+      if(raw){var p=JSON.parse(raw);if(p&&Array.isArray(p.items)&&p.items.length){state=p}
+      if(state.extra===undefined)state.extra="15";}
     }catch(e){}
     if(!state.items.length){for(var i=0;i<15;i++)state.items.push(blank())}
   }
@@ -208,8 +216,8 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
       ICON+'<span>اضغط لرفع صورة</span>'+
       '<input type="file" accept="image/*">'+
     '</label>'+
-    row("سعر الجملة:","w",it.w)+row("سعر البيع:","s",it.s)+row("التوصيل:","d",it.d)+
-    '<div class="row profit"><label>الربح:</label><output></output></div>';
+    row("سعر الجملة:","w",it.w)+row("سعر البيع:","s",it.s)+
+    '<div class="row profit"><label>الربح الصافي:</label><output></output></div>';
   }
   function row(label,k,v){
     return '<div class="row"><label>'+label+'</label><input data-k="'+k+'" type="text" inputmode="decimal" autocomplete="off" value="'+(v||"")+'" placeholder="0"></div>';
@@ -264,17 +272,18 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
     var it=state.items[i];
     var out=el.querySelector("output");
     var filled=it.s!==""||it.w!=="";
-    var p=num(it.s)-num(it.w)-num(it.d);
+    var p=num(it.s)-num(it.w)-num(state.extra);
     out.textContent=filled?fmt(p)+" DH":"—";
     out.className=filled?(p>=0?"pos":"neg"):"";
   }
 
   function totals(){
-    var w=0,s=0,d=0,p=0;
+    var w=0,s=0,d=0,p=0,n=0;
     state.items.forEach(function(it){
       if(it.s===""&&it.w==="")return;
-      w+=num(it.w);s+=num(it.s);d+=num(it.d);
+      n++;w+=num(it.w);s+=num(it.s);
     });
+    d=n*num(state.extra);
     p=s-w-d;
     document.getElementById("tw").textContent=fmt(w)+" DH";
     document.getElementById("ts").textContent=fmt(s)+" DH";
@@ -312,12 +321,20 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
       return;
     }
     clearTimeout(resetT);resetT=null;resetBtn.textContent="مسح الكل";
-    state={items:[],notes:""};
+    state={items:[],notes:"",extra:state.extra};
     for(var i=0;i<15;i++)state.items.push(blank());
     document.getElementById("notes").value="";
     render();save();
   });
   document.getElementById("print").addEventListener("click",function(){try{window.print()}catch(e){}savedEl.textContent="إذا لم تظهر الطباعة، خذ لقطة شاشة"});
+  var ex=document.getElementById("extra");
+  ex.value=state.extra;
+  ex.addEventListener("input",function(){
+    var c=clean(ex.value);if(c!==ex.value)ex.value=c;
+    state.extra=c;
+    document.querySelectorAll(".item").forEach(function(el,i){refreshCard(el,i)});
+    totals();save();
+  });
   var notes=document.getElementById("notes");
   notes.addEventListener("input",function(){state.notes=notes.value;save()});
 
@@ -332,6 +349,7 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
   }catch(e){}
   load();
   notes.value=state.notes||"";
+  ex.value=state.extra;
   render();
 })();
 </script>
