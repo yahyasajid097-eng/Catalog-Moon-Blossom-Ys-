@@ -56,6 +56,8 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
 .saved{margin-inline-start:auto;align-self:center;font-size:13px;color:var(--muted)}
 
 .extra{max-width:1200px;margin:14px auto 0;padding:0 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:500;font-size:14px}
+.extra{gap:10px 22px}
+.extra .fld{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .extra input{width:72px;font:inherit;font-weight:700;text-align:center;direction:ltr;border:1px solid var(--gold);background:#fff;color:var(--ink);border-radius:10px;padding:7px 6px;min-height:40px}
 .extra input:focus{outline:2px solid var(--gold)}
 /* grid */
@@ -65,8 +67,8 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
 
 .item{background:var(--cream);border:1px solid var(--gold);border-radius:16px;padding:8px;position:relative;display:flex;flex-direction:column;gap:8px}
 .num{position:absolute;top:6px;inset-inline-start:6px;z-index:2;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--cream);display:grid;place-items:center;font-weight:700;font-size:14px}
-.del{position:absolute;top:6px;inset-inline-end:6px;z-index:2;width:28px;height:28px;border-radius:50%;border:0;background:rgba(20,18,16,.72);color:var(--cream);cursor:pointer;font-size:16px;line-height:1;display:none}
-.item.has-img .del{display:block}
+.del{position:absolute;top:6px;inset-inline-end:6px;z-index:2;width:28px;height:28px;border-radius:50%;border:0;background:rgba(20,18,16,.72);color:var(--cream);cursor:pointer;font-size:16px;line-height:1;display:block;min-width:28px;height:28px;padding:0 8px;font:inherit;font-weight:700}
+.del.confirm{background:var(--bad);color:#fff;font-size:13px;border-radius:14px}
 .photo{position:relative;aspect-ratio:3/4;background:var(--card);border-radius:12px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:14px;border:0;width:100%;padding:0}
 .photo svg{width:44px;height:44px}
 .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -78,14 +80,20 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
 .row label{flex:1;font-size:13px;font-weight:500;white-space:nowrap}
 .row input{width:50%;min-width:0;font:inherit;font-size:15px;font-weight:700;text-align:center;direction:ltr;border:1px solid transparent;background:var(--field);color:var(--ink);border-radius:10px;padding:7px 6px;min-height:38px}
 .row input:focus{outline:none;border-color:var(--gold);background:#fff}
+.row label{font-size:12.5px}
+.row input{width:46%}
+.row input.ov{background:#fff;border-color:var(--gold)}
+.row.sub{font-size:12.5px}
+.row.sub output{width:46%;text-align:center;direction:ltr;font-weight:700;font-size:14px}
+.row.sub.first{border-top:1px dashed var(--gold);padding-top:6px}
 .row.profit{border-top:1px dashed var(--gold);padding-top:6px}
-.row.profit output{width:50%;text-align:center;direction:ltr;font-weight:700;font-size:16px;color:var(--muted)}
+.row.profit output{width:46%;text-align:center;direction:ltr;font-weight:700;font-size:16px;color:var(--muted)}
 .row.profit output.pos{color:var(--good)}
 .row.profit output.neg{color:var(--bad)}
 
 /* summary */
 .foot{max-width:1200px;margin:18px auto 0;padding:0 14px;display:grid;gap:12px;grid-template-columns:1fr}
-@media(min-width:900px){.foot{grid-template-columns:1.1fr 1.2fr .8fr}}
+@media(min-width:900px){.foot{grid-template-columns:1fr 1.4fr .7fr}}
 .notes,.sum{background:var(--card);border-radius:16px;padding:14px;border:1px solid var(--gold-soft)}
 .notes h2,.sum h2{margin:0 0 8px;font-family:"Reem Kufi","Tajawal",sans-serif;font-size:20px}
 .notes textarea{width:100%;min-height:150px;resize:vertical;font:inherit;border:0;border-radius:10px;padding:10px;background:var(--cream);color:var(--ink);line-height:1.9;background-image:repeating-linear-gradient(transparent,transparent 30px,var(--gold-soft) 31px)}
@@ -96,6 +104,7 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
 .sum dt{font-size:14px}
 .sum dd{margin:0;font-weight:700;direction:ltr;font-size:17px}
 .sum .line.big{background:var(--ink);color:var(--gold-soft)}
+.sum .line.soft{background:var(--cream)}
 .sum .line.big dd{font-size:20px}
 .quote{background:var(--ink);color:var(--gold-soft);border-radius:16px;padding:22px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:"Reem Kufi","Tajawal",sans-serif;font-size:22px;line-height:1.7}
 
@@ -144,8 +153,15 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
 </div>
 
 <div class="extra">
-  <label for="extra">تكلفة إضافية لكل منتج (توصيل المورد + التغليف):</label>
-  <span><input id="extra" type="text" inputmode="decimal" autocomplete="off" value="15"> DH</span>
+  <div class="fld">
+    <label for="extra">التغليف لكل قطعة (الافتراضي):</label>
+    <span><input id="extra" type="text" inputmode="decimal" autocomplete="off" value="15"> DH</span>
+  </div>
+  <div class="fld">
+    <label for="other">مصاريف أخرى (شحن، نقل، إلخ):</label>
+    <span><input id="other" type="text" inputmode="decimal" autocomplete="off" value="" placeholder="0"> DH</span>
+  </div>
+  <div class="fld" style="font-size:12.5px;color:var(--muted)">يمكنك تغيير التغليف لمنتج معيّن من داخل بطاقته</div>
 </div>
 
 <main>
@@ -159,9 +175,12 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
     <div class="sum">
       <h2>إجمالي الأرباح</h2>
       <dl>
+        <div class="line soft"><dt>عدد المنتجات / القطع:</dt><dd id="tq">0</dd></div>
         <div class="line"><dt>إجمالي سعر الجملة:</dt><dd id="tw">0</dd></div>
+        <div class="line"><dt>إجمالي التغليف:</dt><dd id="tpk">0</dd></div>
+        <div class="line"><dt>مصاريف أخرى:</dt><dd id="to">0</dd></div>
+        <div class="line soft"><dt>إجمالي التكلفة:</dt><dd id="tc">0</dd></div>
         <div class="line"><dt>إجمالي سعر البيع:</dt><dd id="ts">0</dd></div>
-        <div class="line"><dt>تغليف وتوصيل المورد:</dt><dd id="td">0</dd></div>
         <div class="line big"><dt>صافي الربح:</dt><dd id="tp">0</dd></div>
       </dl>
     </div>
@@ -174,17 +193,22 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
 <script>
 (function(){
   var KEY="moonblossom-catalog-v1";
-  var state={items:[],notes:"",extra:"15"};
+  var state={items:[],notes:"",extra:"15",other:""};
   var grid=document.getElementById("grid");
   var savedEl=document.getElementById("saved");
   var saveTimer=null;
 
-  function blank(){return{img:"",w:"",s:""}}
+  function blank(){return{img:"",q:"1",w:"",s:"",pk:""}}
   function load(){
     try{
       var raw=localStorage.getItem(KEY);
       if(raw){var p=JSON.parse(raw);if(p&&Array.isArray(p.items)&&p.items.length){state=p}
-      if(state.extra===undefined)state.extra="15";}
+      if(state.extra===undefined)state.extra="15";
+      if(state.other===undefined)state.other="";
+      state.items.forEach(function(it){
+        if(it.q===undefined)it.q="1";
+        if(it.pk===undefined)it.pk="";
+      });}
     }catch(e){}
     if(!state.items.length){for(var i=0;i<15;i++)state.items.push(blank())}
   }
@@ -204,23 +228,35 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
       .replace(/^(\d*\.\d*).*$/,function(m,a){return a});
   }
   function num(v){var n=parseFloat(clean(v));return isNaN(n)?0:n}
+  function cleanInt(v){return clean(v).replace(/\./g,"")}
+  function calc(it){
+    var filled=it.s!==""||it.w!=="";
+    var q=Math.floor(num(it.q));
+    var w=num(it.w),s=num(it.s);
+    var pk=(it.pk!==""&&it.pk!==undefined)?num(it.pk):num(state.extra);
+    var wt=filled?q*w:0,st=filled?q*s:0,pt=filled?q*pk:0;
+    return{filled:filled,q:q,wt:wt,st:st,pt:pt,profit:st-wt-pt};
+  }
   function fmt(n){return (Math.round(n*100)/100).toString()}
 
   var ICON='<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="7" width="38" height="34" rx="4"/><circle cx="17" cy="19" r="4"/><path d="M5 35l11-10 8 8 6-5 13 11"/></svg>';
 
   function cardHTML(it,i){
     return '<div class="num" aria-hidden="true">'+(i+1)+'</div>'+
-    '<button type="button" class="del" aria-label="حذف الصورة">×</button>'+
+    '<button type="button" class="del" aria-label="حذف المنتج">×</button>'+
     '<label class="photo" tabindex="0" aria-label="رفع صورة المنتج '+(i+1)+'">'+
       (it.img?'<img alt="صورة المنتج '+(i+1)+'" src="'+it.img+'">':'')+
       ICON+'<span>اضغط لرفع صورة</span>'+
       '<input type="file" accept="image/*">'+
     '</label>'+
-    row("سعر الجملة:","w",it.w)+row("سعر البيع:","s",it.s)+
-    '<div class="row profit"><label>الربح الصافي:</label><output></output></div>';
+    row("الكمية:","q",it.q,"1")+row("جملة/قطعة:","w",it.w)+row("بيع/قطعة:","s",it.s)+row("تغليف/قطعة:","pk",it.pk)+
+    '<div class="row sub first"><label>مجموع الجملة:</label><output data-o="wt"></output></div>'+
+    '<div class="row sub"><label>مجموع البيع:</label><output data-o="st"></output></div>'+
+    '<div class="row sub"><label>مجموع التغليف:</label><output data-o="pt"></output></div>'+
+    '<div class="row profit"><label>الربح الصافي:</label><output data-o="profit"></output></div>';
   }
-  function row(label,k,v){
-    return '<div class="row"><label>'+label+'</label><input data-k="'+k+'" type="text" inputmode="decimal" autocomplete="off" value="'+(v||"")+'" placeholder="0"></div>';
+  function row(label,k,v,ph){
+    return '<div class="row"><label>'+label+'</label><input data-k="'+k+'" type="text" inputmode="'+(k==="q"?"numeric":"decimal")+'" autocomplete="off" value="'+(v||"")+'" placeholder="'+(k==="pk"?"":(ph||"0"))+'"></div>';
   }
 
   function render(){
@@ -240,7 +276,7 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
     var it=state.items[i];
     el.querySelectorAll("input[data-k]").forEach(function(inp){
       inp.addEventListener("input",function(){
-        var c=clean(inp.value);
+        var c=inp.dataset.k==="q"?cleanInt(inp.value):clean(inp.value);
         if(c!==inp.value)inp.value=c;
         it[inp.dataset.k]=c;
         refreshCard(el,i);totals();save();
@@ -260,35 +296,56 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
         save();
       });
     });
-    el.querySelector(".del").addEventListener("click",function(e){
+    var del=el.querySelector(".del"),delT=null;
+    del.addEventListener("click",function(e){
       e.preventDefault();e.stopPropagation();
-      it.img="";
-      var old=photo.querySelector("img");if(old)old.remove();
-      el.classList.remove("has-img");file.value="";save();
+      var empty=!it.img&&it.w===""&&it.s===""&&it.pk===""&&(it.q===""||it.q==="1");
+      if(!empty&&!delT){
+        del.textContent="حذف؟";del.classList.add("confirm");
+        delT=setTimeout(function(){delT=null;del.textContent="×";del.classList.remove("confirm")},3000);
+        return;
+      }
+      clearTimeout(delT);
+      state.items.splice(i,1);
+      if(!state.items.length)state.items.push(blank());
+      render();save();
     });
   }
 
   function refreshCard(el,i){
     var it=state.items[i];
-    var out=el.querySelector("output");
-    var filled=it.s!==""||it.w!=="";
-    var p=num(it.s)-num(it.w)-num(state.extra);
-    out.textContent=filled?fmt(p)+" DH":"—";
-    out.className=filled?(p>=0?"pos":"neg"):"";
+    var c=calc(it);
+    var pkIn=el.querySelector('input[data-k="pk"]');
+    pkIn.placeholder=fmt(num(state.extra));
+    pkIn.classList.toggle("ov",it.pk!=="");
+    ["wt","st","pt"].forEach(function(k){
+      el.querySelector('output[data-o="'+k+'"]').textContent=c.filled?fmt(c[k])+" DH":"—";
+    });
+    var out=el.querySelector('output[data-o="profit"]');
+    out.textContent=c.filled?fmt(c.profit)+" DH":"—";
+    out.className=c.filled?(c.profit>=0?"pos":"neg"):"";
   }
 
   function totals(){
-    var w=0,s=0,d=0,p=0,n=0;
+    var w=0,s=0,pk=0,n=0,pcs=0;
     state.items.forEach(function(it){
-      if(it.s===""&&it.w==="")return;
-      n++;w+=num(it.w);s+=num(it.s);
+      var c=calc(it);
+      if(!c.filled||c.q<=0)return;
+      n++;pcs+=c.q;w+=c.wt;s+=c.st;pk+=c.pt;
     });
-    d=n*num(state.extra);
-    p=s-w-d;
-    document.getElementById("tw").textContent=fmt(w)+" DH";
-    document.getElementById("ts").textContent=fmt(s)+" DH";
-    document.getElementById("td").textContent=fmt(d)+" DH";
-    document.getElementById("tp").textContent=fmt(p)+" DH";
+    var other=num(state.other);
+    var cost=w+pk+other;
+    var p=s-cost;
+    function set(id,t){document.getElementById(id).textContent=t}
+    set("tq",n+" / "+pcs);
+    set("tw",fmt(w)+" DH");
+    set("tpk",fmt(pk)+" DH");
+    set("to",fmt(other)+" DH");
+    set("tc",fmt(cost)+" DH");
+    set("ts",fmt(s)+" DH");
+    set("tp",fmt(p)+" DH");
+    var tp=document.getElementById("tp");
+    tp.style.color=p<0?"#ff9d92":"";
   }
 
   function shrink(file,cb){
@@ -321,7 +378,8 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
       return;
     }
     clearTimeout(resetT);resetT=null;resetBtn.textContent="مسح الكل";
-    state={items:[],notes:"",extra:state.extra};
+    state={items:[],notes:"",extra:state.extra,other:""};
+    document.getElementById("other").value="";
     for(var i=0;i<15;i++)state.items.push(blank());
     document.getElementById("notes").value="";
     render();save();
@@ -334,6 +392,12 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
     state.extra=c;
     document.querySelectorAll(".item").forEach(function(el,i){refreshCard(el,i)});
     totals();save();
+  });
+  var ot=document.getElementById("other");
+  ot.value=state.other;
+  ot.addEventListener("input",function(){
+    var c=clean(ot.value);if(c!==ot.value)ot.value=c;
+    state.other=c;totals();save();
   });
   var notes=document.getElementById("notes");
   notes.addEventListener("input",function(){state.notes=notes.value;save()});
@@ -350,6 +414,7 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Tajawal",sys
   load();
   notes.value=state.notes||"";
   ex.value=state.extra;
+  ot.value=state.other;
   render();
 })();
 </script>
